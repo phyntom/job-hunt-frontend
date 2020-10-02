@@ -10,7 +10,17 @@ export default function ApplicantList() {
       const fetchApplicant = async () => {
          try {
             const response = await instance.get('/');
-            setApplicants(response.data.data);
+            let listApplicants = response.data.data;
+            listApplicants.sort((a, b) => {
+               if (a.lastName < b.lastName) {
+                  return 1;
+               }
+               if (a.lastName > b.lastName) {
+                  return -1;
+               }
+               return 0;
+            });
+            setApplicants(listApplicants.slice(1, 11));
             console.log(response.data);
          } catch (error) {}
       };
@@ -23,8 +33,8 @@ export default function ApplicantList() {
             <thead>
                <tr>
                   <th scope='col'>#</th>
-                  <th scope='col'>FirstName</th>
                   <th scope='col'>LastName</th>
+                  <th scope='col'>FirstName</th>
                   <th scope='col'>Email</th>
                   <th scope='col'>Status</th>
                   <th scope='col'>Submission Date</th>
@@ -37,8 +47,8 @@ export default function ApplicantList() {
                         <th scope='row'>
                            <Link to={`/editApplicant/${item._id}`}>{item._id}</Link>
                         </th>
-                        <td>{item.firstName}</td>
                         <td>{item.lastName}</td>
+                        <td>{item.firstName}</td>
                         <td>{item.email}</td>
                         <td>{item.status}</td>
                         <td>{item.submittedAt}</td>
